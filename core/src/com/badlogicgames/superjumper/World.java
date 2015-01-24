@@ -23,16 +23,6 @@ import java.util.Random;
 import com.badlogic.gdx.math.Vector2;
 
 public class World {
-	public interface WorldListener {
-		public void jump ();
-
-		public void highJump ();
-
-		public void hit ();
-
-		public void coin ();
-	}
-
 	public static final float WORLD_WIDTH = 10;
 	public static final float WORLD_HEIGHT = 15 * 20;
 	public static final int WORLD_STATE_RUNNING = 0;
@@ -45,27 +35,37 @@ public class World {
 	public final List<Spring> springs;
 	public final List<Squirrel> squirrels;
 	public final List<Coin> coins;
+    public final List<Bullet> bullets;
+    public final List<Bob> bobs;
 	public Castle castle;
-	public final WorldListener listener;
 	public final Random rand;
 
 	public float heightSoFar;
 	public int score;
 	public int state;
 
-	public World (WorldListener listener) {
-		this.bob = new Bob(5, 1);
+    public int hp;
+
+    public float genBobTime;
+
+	public World () {
+        this.hp = 10;
+		this.bob = new Bob(5, 10);
 		this.platforms = new ArrayList<Platform>();
 		this.springs = new ArrayList<Spring>();
 		this.squirrels = new ArrayList<Squirrel>();
 		this.coins = new ArrayList<Coin>();
-		this.listener = listener;
+        this.bullets = new ArrayList<Bullet>();
+        this.bobs = new ArrayList<Bob>();
+        bobs.add(bob);
+
 		rand = new Random();
-		generateLevel();
 
 		this.heightSoFar = 0;
 		this.score = 0;
 		this.state = WORLD_STATE_RUNNING;
+
+        this.genBobTime = 2.0f;
 	}
 
 	private void generateLevel () {
@@ -104,17 +104,69 @@ public class World {
 	}
 
 	public void update (float deltaTime, float accelX) {
-		updateBob(deltaTime, accelX);
+        if((genBobTime -= deltaTime) <= 0)
+        {
+            genBobTime = 2;
+            float x = rand.nextFloat() * 5;
+            Bob bob = new Bob(x, 10);
+            bobs.add(bob);
+        }
+
+//		updateBob(deltaTime, accelX);
 		updatePlatforms(deltaTime);
 		updateSquirrels(deltaTime);
 		updateCoins(deltaTime);
+        updateBobs(deltaTime);
+        updateBullets(deltaTime);
 		if (bob.state != Bob.BOB_STATE_HIT) checkCollisions();
 		checkGameOver();
 	}
 
-	private void updateBob (float deltaTime, float accelX) {
+    private void updateBobs(float deltaTime) {
+        for(int i = bobs.size() - 1; i >= 0; i--)
+        {
+            bobs.get(i).update(deltaTime);
+            if(heightSoFar - 7.5f > bobs.get(i).position.y)
+            {
+                bobs.remove(i);
+                hp--;
+            }
+        }
+    }
+
+    private void updateBullets(float deltaTime) {
+        int len = bullets.size();
+        for(int i = len - 1; i >= 0; i--)
+        {
+            if(bullets.get(i).update(deltaTime))
+            {
+                bullets.remove(i);
+                continue;
+            }
+            
+            Bob bob = getIntersectedBob(bullets.get(i));
+            if(bob != null)
+            {
+                bobs.remove(bob);
+                bullets.remove(i);
+            }
+        }
+    }
+
+    private Bob getIntersectedBob(Bullet bullet) {
+        for(Bob bob : bobs)
+        {
+            if(bob.bounds.overlaps(bullet.bounds))
+            {
+                return bob;
+            }
+        }
+        return null;
+    }
+
+    private void updateBob (float deltaTime, float accelX) {
 		if (bob.state != Bob.BOB_STATE_HIT && bob.position.y <= 0.5f) bob.hitPlatform();
-		if (bob.state != Bob.BOB_STATE_HIT) bob.velocity.x = -accelX / 10 * Bob.BOB_MOVE_VELOCITY;
+//		if (bob.state != Bob.BOB_STATE_HIT) bob.velocity.x = -accelX / 10 * Bob.BOB_MOVE_VELOCITY;
 		bob.update(deltaTime);
 		heightSoFar = Math.max(bob.position.y, heightSoFar);
 	}
@@ -163,7 +215,6 @@ public class World {
 			if (bob.position.y > platform.position.y) {
 				if (bob.bounds.overlaps(platform.bounds)) {
 					bob.hitPlatform();
-					listener.jump();
 					if (rand.nextFloat() > 0.5f) {
 						platform.pulverize();
 					}
@@ -179,7 +230,6 @@ public class World {
 			Squirrel squirrel = squirrels.get(i);
 			if (squirrel.bounds.overlaps(bob.bounds)) {
 				bob.hitSquirrel();
-				listener.hit();
 			}
 		}
 	}
@@ -191,7 +241,6 @@ public class World {
 			if (bob.bounds.overlaps(coin.bounds)) {
 				coins.remove(coin);
 				len = coins.size();
-				listener.coin();
 				score += Coin.COIN_SCORE;
 			}
 
@@ -205,20 +254,19 @@ public class World {
 			if (bob.position.y > spring.position.y) {
 				if (bob.bounds.overlaps(spring.bounds)) {
 					bob.hitSpring();
-					listener.highJump();
 				}
 			}
 		}
 	}
 
 	private void checkCastleCollisions () {
-		if (castle.bounds.overlaps(bob.bounds)) {
-			state = WORLD_STATE_NEXT_LEVEL;
-		}
+//		if (castle.bounds.overlaps(bob.bounds)) {
+//			state = WORLD_STATE_NEXT_LEVEL;
+//		}
 	}
 
 	private void checkGameOver () {
-		if (heightSoFar - 7.5f > bob.position.y) {
+		if (hp <= 0) {
 			state = WORLD_STATE_GAME_OVER;
 		}
 	}

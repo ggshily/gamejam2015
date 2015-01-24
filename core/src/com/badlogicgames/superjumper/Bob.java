@@ -32,30 +32,31 @@ public class Bob extends DynamicGameObject {
 		super(x, y, BOB_WIDTH, BOB_HEIGHT);
 		state = BOB_STATE_FALL;
 		stateTime = 0;
+        velocity.add(0, -1.0f);
 	}
 
 	public void update (float deltaTime) {
-		velocity.add(World.gravity.x * deltaTime, World.gravity.y * deltaTime);
+//		velocity.add(World.gravity.x * deltaTime, World.gravity.y * deltaTime);
 		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
 		bounds.x = position.x - bounds.width / 2;
 		bounds.y = position.y - bounds.height / 2;
 
-		if (velocity.y > 0 && state != BOB_STATE_HIT) {
-			if (state != BOB_STATE_JUMP) {
-				state = BOB_STATE_JUMP;
-				stateTime = 0;
-			}
-		}
+//		if (velocity.y > 0 && state != BOB_STATE_HIT) {
+//			if (state != BOB_STATE_JUMP) {
+//				state = BOB_STATE_JUMP;
+//				stateTime = 0;
+//			}
+//		}
+//
+//		if (velocity.y < 0 && state != BOB_STATE_HIT) {
+//			if (state != BOB_STATE_FALL) {
+//				state = BOB_STATE_FALL;
+//				stateTime = 0;
+//			}
+//		}
 
-		if (velocity.y < 0 && state != BOB_STATE_HIT) {
-			if (state != BOB_STATE_FALL) {
-				state = BOB_STATE_FALL;
-				stateTime = 0;
-			}
-		}
-
-		if (position.x < 0) position.x = World.WORLD_WIDTH;
-		if (position.x > World.WORLD_WIDTH) position.x = 0;
+//		if (position.x < 0) position.x = World.WORLD_WIDTH;
+//		if (position.x > World.WORLD_WIDTH) position.x = 0;
 
 		stateTime += deltaTime;
 	}

@@ -24,7 +24,6 @@ import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.math.Rectangle;
 import com.badlogic.gdx.math.Vector3;
-import com.badlogicgames.superjumper.World.WorldListener;
 
 public class GameScreen extends ScreenAdapter {
 	static final int GAME_READY = 0;
@@ -39,7 +38,6 @@ public class GameScreen extends ScreenAdapter {
 	OrthographicCamera guiCam;
 	Vector3 touchPoint;
 	World world;
-	WorldListener worldListener;
 	WorldRenderer renderer;
 	Rectangle pauseBounds;
 	Rectangle resumeBounds;
@@ -54,28 +52,8 @@ public class GameScreen extends ScreenAdapter {
 		guiCam = new OrthographicCamera(320, 480);
 		guiCam.position.set(320 / 2, 480 / 2, 0);
 		touchPoint = new Vector3();
-		worldListener = new WorldListener() {
-			@Override
-			public void jump () {
-				Assets.playSound(Assets.jumpSound);
-			}
 
-			@Override
-			public void highJump () {
-				Assets.playSound(Assets.highJumpSound);
-			}
-
-			@Override
-			public void hit () {
-				Assets.playSound(Assets.hitSound);
-			}
-
-			@Override
-			public void coin () {
-				Assets.playSound(Assets.coinSound);
-			}
-		};
-		world = new World(worldListener);
+		world = new World();
 		renderer = new WorldRenderer(game.batcher, world);
 		pauseBounds = new Rectangle(320 - 64, 480 - 64, 64, 64);
 		resumeBounds = new Rectangle(160 - 96, 240, 192, 36);
@@ -121,6 +99,12 @@ public class GameScreen extends ScreenAdapter {
 				state = GAME_PAUSED;
 				return;
 			}
+
+            Vector3 position = new Vector3(Gdx.input.getX(), Gdx.input.getY(), 0);
+            renderer.cam.unproject(position);
+            Bullet bullet = new Bullet(position.x, position.y, 0.4f, 0.4f, 3, 10, 0);
+            bullet.velocity.add(0, 5.0f);
+            world.bullets.add(bullet);
 		}
 		
 		ApplicationType appType = Gdx.app.getType();
@@ -172,7 +156,7 @@ public class GameScreen extends ScreenAdapter {
 
 	private void updateLevelEnd () {
 		if (Gdx.input.justTouched()) {
-			world = new World(worldListener);
+			world = new World();
 			renderer = new WorldRenderer(game.batcher, world);
 			world.score = lastScore;
 			state = GAME_READY;

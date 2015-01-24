@@ -35,7 +35,7 @@ public class WorldRenderer {
 	}
 
 	public void render () {
-		if (world.bob.position.y > cam.position.y) cam.position.y = world.bob.position.y;
+//		if (world.bob.position.y > cam.position.y) cam.position.y = world.bob.position.y;
 		cam.update();
 		batch.setProjectionMatrix(cam.combined);
 		renderBackground();
@@ -53,15 +53,33 @@ public class WorldRenderer {
 	public void renderObjects () {
 		batch.enableBlending();
 		batch.begin();
-		renderBob();
+//		renderBob();
+        renderBobs();
 		renderPlatforms();
 		renderItems();
 		renderSquirrels();
-		renderCastle();
+//		renderCastle();
+        renderBullets();
 		batch.end();
 	}
 
-	private void renderBob () {
+    private void renderBobs() {
+        for(Bob bob : world.bobs)
+        {
+            TextureRegion keyFrame = Assets.bobFall.getKeyFrame(bob.stateTime, Animation.ANIMATION_LOOPING);
+            batch.draw(keyFrame, bob.position.x + 0.5f, bob.position.y - 0.5f, 1, 1);
+
+        }
+    }
+
+    private void renderBullets() {
+        for(Bullet bullet : world.bullets)
+        {
+            bullet.draw(batch);
+        }
+    }
+
+    private void renderBob () {
 		TextureRegion keyFrame;
 		switch (world.bob.state) {
 		case Bob.BOB_STATE_FALL:
