@@ -43,10 +43,14 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 
     final int samples = 8000;
     boolean isMono = true;
-    final short[] data = new short[samples * 2];
-    final double[] fftData = new double[samples * 2];
+    final short[] data = new short[(int)(samples * 1.8f)];
+    final double[] fftData = new double[(int)(samples * 1.8f)];
     boolean isRecording;
     boolean genFort;
+
+    int sound1;
+    int sound2;
+    int sound3;
 
     SuperJumper game;
 
@@ -130,36 +134,8 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 			}
 
 
-            if(!isRecording && false) {
-                isRecording = true;
-                final AudioRecorder recorder = Gdx.audio.newAudioRecorder(samples, isMono);
-//                final AudioDevice player = Gdx.audio.newAudioDevice(samples, isMono);
 
-                new Thread(new Runnable() {
-                    @Override
-                    public void run() {
-                        RealDoubleFFT fft = new RealDoubleFFT(fftBins);
-                        double scale = MEAN_MAX * MEAN_MAX * fftBins * fftBins / 2d;
-
-                        out.println("Record: Start");
-                        recorder.read(data, 0, data.length);
-                        recorder.dispose();
-                        out.println("Record: End");
-//                        System.out.println("Play : Start");
-//                        player.writeSamples(data, 0, data.length);
-//                        System.out.println("Play : End");
-//                        player.dispose();
-
-                        shortToDouble(data, fftData);
-                        convertToDb(fftData, scale);
-
-                        isRecording = false;
-                        genFort = true;
-                    }
-                }).start();
-            }
-
-            if(genFort)
+            if(genFort && false)
             {
                 genFort = false;
 
@@ -186,6 +162,68 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 
         if(touch.touched)
         {
+
+            if(!isRecording) {
+                isRecording = true;
+                final AudioRecorder recorder = Gdx.audio.newAudioRecorder(samples, isMono);
+//                final AudioDevice player = Gdx.audio.newAudioDevice(samples, isMono);
+
+                new Thread(new Runnable() {
+                    @Override
+                    public void run() {
+                        RealDoubleFFT fft = new RealDoubleFFT(fftBins);
+                        double scale = MEAN_MAX * MEAN_MAX * fftBins * fftBins / 2d;
+
+                        out.println("Record: Start");
+                        recorder.read(data, 0, data.length);
+                        recorder.dispose();
+                        out.println("Record: End");
+//                        System.out.println("Play : Start");
+//                        player.writeSamples(data, 0, data.length);
+//                        System.out.println("Play : End");
+//                        player.dispose();
+
+                        shortToDouble(data, fftData);
+                        convertToDb(fftData, scale);
+
+//                        for(int i = 0; i < fftData.length/2; i++)
+//                        {
+//                            System.out.printf("%.1f ", fftData[i]);
+//
+//                            if(i % 10 == 0)
+//                                System.out.println();
+//                        }
+
+                        sound1 = 0;
+                        sound2 = 0;
+                        sound3 = 0;
+                        int len = fftData.length/2;
+                        for(int i = 0; i < len; i++)
+                        {
+                            if(i < len / 3) {
+                                if (fftData[i] > -30) {
+                                    sound1 = 1;
+                                }
+                            }
+                            else if(i < len * 2 / 3) {
+                                if(fftData[i] > -30)
+                                {
+                                    sound2 = 1;
+                                }
+                            }
+                            else
+                            {
+                                if(fftData[i] > -30)
+                                    sound3 = 1;
+                            }
+                        }
+
+                        isRecording = false;
+                        genFort = true;
+                    }
+                }).start();
+            }
+
             if(world.voicebar == null)
             {
                 Vector3 position = new Vector3(touch.touchX, touch.touchY, 0);
@@ -202,11 +240,7 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
                 Vector3 position = new Vector3(touch.touchX, touch.touchY, 0);
                 renderer.cam.unproject(position);
 
-                int type = 1;
-                if(world.rand.nextFloat() > 0.5f)
-                    type = 2;
-                Fort fort = new Fort(position.x, position.y, 0.4f, 0.4f, 2, type, .8f);
-                world.forts.add(fort);
+                genFort(position);
             }
         }
         else if(world.voicebar != null)
@@ -217,11 +251,7 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
                 Vector3 position = new Vector3(touch.touchX, touch.touchY, 0);
                 renderer.cam.unproject(position);
 
-                int type = 1;
-                if(world.rand.nextFloat() > 0.5f)
-                    type = 2;
-                Fort fort = new Fort(position.x, position.y, 0.4f, 0.4f, 2, type, .8f);
-                world.forts.add(fort);
+                genFort(position);
             }
             world.voicebar = null;
         }
@@ -259,6 +289,22 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 			Settings.save();
 		}
 	}
+
+    private void genFort(Vector3 position) {
+        int type = -1;
+//                if(world.rand.nextFloat() > 0.5f)
+//                    type = 2;
+
+        if(sound1 > 0 && sound2 == 0 && sound3 > 0)
+            type = 1;
+        else if(sound1 > 0 && sound2 > 0 && sound3 == 0)
+            type = 2;
+        System.out.printf("sound : %d %d %d\n", sound1, sound2, sound3);
+        if(type > 0) {
+            Fort fort = new Fort(position.x, position.y, 0.4f, 0.4f, 2, type, .8f);
+            world.forts.add(fort);
+        }
+    }
 
     private static void shortToDouble(short[] s, double[] d)
     {
