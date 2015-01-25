@@ -46,7 +46,7 @@ public class WorldRenderer {
         batch.disableBlending();
         batch.begin();
         batch.draw(Assets.base, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH,
-                0.2f);
+                0.4f);
         batch.end();
     }
 
@@ -68,12 +68,21 @@ public class WorldRenderer {
 		renderSquirrels();
 //		renderCastle();
         renderBullets();
+        renderExpors();
         renderForts();
         renderVoicebar();
         batch.draw(Assets.base, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH,
                 0.2f);
 		batch.end();
 	}
+
+    private void renderExpors() {
+        for(Coin coin : world.explors)
+        {
+            TextureRegion keyFrame = Assets.explosion.getKeyFrame(coin.stateTime, Animation.ANIMATION_LOOPING);
+            batch.draw(keyFrame, coin.position.x - 0.5f, coin.position.y - 0.5f, 1, 1);
+        }
+    }
 
     private void renderVoicebar() {
         if(world.voicebar != null)

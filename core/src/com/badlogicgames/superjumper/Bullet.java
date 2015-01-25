@@ -38,7 +38,7 @@ public class Bullet extends DynamicGameObject {
 
         if(this.type == 1) {
             TextureRegion keyFrame = Assets.bullet1.getKeyFrame(stateTime, Animation.ANIMATION_LOOPING);
-            batch.draw(keyFrame, position.x - 0.5f, position.y - 0.5f, 1, 2);
+            batch.draw(keyFrame, position.x - 0.25f, position.y - 0.5f, .5f, 1);
         }
         else
         {

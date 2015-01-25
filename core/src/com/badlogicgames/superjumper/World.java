@@ -38,6 +38,7 @@ public class World {
     public final List<Bullet> bullets;
     public final List<Bob> bobs;
     public final List<Fort> forts;
+    public final List<Coin> explors;
 	public Castle castle;
 	public final Random rand;
 
@@ -62,6 +63,7 @@ public class World {
         this.bullets = new ArrayList<Bullet>();
         this.bobs = new ArrayList<Bob>();
         this.forts = new ArrayList<Fort>();
+        this.explors = new ArrayList<Coin>();
         bobs.add(bob);
 
 		rand = new Random();
@@ -113,7 +115,7 @@ public class World {
         {
             genBobTime = 2;
             float x = rand.nextFloat() * 5;
-            Bob bob = new Bob(x, 10);
+            Bob bob = new Bob(x, 15);
             bobs.add(bob);
         }
 
@@ -124,6 +126,7 @@ public class World {
         updateBobs(deltaTime);
         updateBullets(deltaTime);
         updateFort(deltaTime);
+        updateExplors(deltaTime);
 
         if(voicebar != null)
         {
@@ -133,6 +136,18 @@ public class World {
 		if (bob.state != Bob.BOB_STATE_HIT) checkCollisions();
 		checkGameOver();
 	}
+
+    private void updateExplors(float deltaTime) {
+        for(int i = explors.size() - 1; i >= 0; i--)
+        {
+            explors.get(i).update(deltaTime);
+
+            if(explors.get(i).stateTime > .6)
+            {
+                explors.remove(i);
+            }
+        }
+    }
 
     private void updateFort(float deltaTime) {
         for(int i = forts.size() - 1; i >= 0; i--)
@@ -177,8 +192,13 @@ public class World {
             Bob bob = getIntersectedBob(bullets.get(i));
             if(bob != null)
             {
+                Coin coin = new Coin(bob.position.x, bob.position.y);
+                explors.add(coin);
+
                 bobs.remove(bob);
                 bullets.remove(i);
+
+                Assets.playSound(Assets.hitEnemySound);
             }
         }
     }

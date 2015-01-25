@@ -201,7 +201,7 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
                 int type = 1;
                 if(world.rand.nextFloat() > 0.5f)
                     type = 2;
-                Fort fort = new Fort(position.x, position.y, 0.4f, 0.4f, 2, type, .4f);
+                Fort fort = new Fort(position.x, position.y, 0.4f, 0.4f, 2, type, .8f);
                 world.forts.add(fort);
             }
         }
@@ -216,7 +216,7 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
                 int type = 1;
                 if(world.rand.nextFloat() > 0.5f)
                     type = 2;
-                Fort fort = new Fort(position.x, position.y, 0.4f, 0.4f, 2, type, .4f);
+                Fort fort = new Fort(position.x, position.y, 0.4f, 0.4f, 2, type, .8f);
                 world.forts.add(fort);
             }
             world.voicebar = null;

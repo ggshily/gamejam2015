@@ -60,6 +60,7 @@ public class Assets {
     public static TextureRegion voicebarFrame;
     public static TextureRegion voicebarInside;
     public static TextureRegion title;
+    public static Animation explosion;
 
 	public static Music music;
 	public static Sound jumpSound;
@@ -67,6 +68,9 @@ public class Assets {
 	public static Sound hitSound;
 	public static Sound coinSound;
 	public static Sound clickSound;
+
+    public static Sound fireSound;
+    public static Sound hitEnemySound;
 
 	public static Texture loadTexture (String file) {
 		return new Texture(Gdx.files.internal(file));
@@ -102,6 +106,14 @@ public class Assets {
 
         title = new TextureRegion(loadTexture("data/titlescreen.png"), 0, 0, 592, 561);
 
+        Texture ex = loadTexture("data/explosion_anim.png");
+        explosion = new Animation(0.05f, new TextureRegion(ex, 0, 0, 134, 134), new TextureRegion(ex, 134 * 1, 0, 134, 134),
+                new TextureRegion(ex, 134 * 2, 0, 134, 134), new TextureRegion(ex, 134 * 3, 0, 134, 134),
+                new TextureRegion(ex, 134 * 4, 0, 134, 134), new TextureRegion(ex, 134 * 5, 0, 134, 134),
+                new TextureRegion(ex, 134 * 6, 0, 134, 134), new TextureRegion(ex, 134 * 7, 0, 134, 134),
+                new TextureRegion(ex, 134 * 8, 0, 134, 134), new TextureRegion(ex, 134 * 9, 0, 134, 134),
+                new TextureRegion(ex, 134 * 10, 0, 134, 134), new TextureRegion(ex, 134 * 11, 0, 134, 134));
+
 		items = loadTexture("data/items.png");
 		mainMenu = new TextureRegion(items, 0, 224, 300, 110);
 		pauseMenu = new TextureRegion(items, 224, 128, 192, 96);
@@ -128,15 +140,18 @@ public class Assets {
 
 		font = new BitmapFont(Gdx.files.internal("data/font.fnt"), Gdx.files.internal("data/font.png"), false);
 
-		music = Gdx.audio.newMusic(Gdx.files.internal("data/music.mp3"));
+		music = Gdx.audio.newMusic(Gdx.files.internal("data/bgmusic.mp3"));
 		music.setLooping(true);
-		music.setVolume(0.5f);
+		music.setVolume(2.5f);
 		if (Settings.soundEnabled) music.play();
 		jumpSound = Gdx.audio.newSound(Gdx.files.internal("data/jump.wav"));
 		highJumpSound = Gdx.audio.newSound(Gdx.files.internal("data/highjump.wav"));
 		hitSound = Gdx.audio.newSound(Gdx.files.internal("data/hit.wav"));
 		coinSound = Gdx.audio.newSound(Gdx.files.internal("data/coin.wav"));
 		clickSound = Gdx.audio.newSound(Gdx.files.internal("data/click.wav"));
+
+        fireSound = Gdx.audio.newSound(Gdx.files.internal("data/fire.mp3"));
+        hitEnemySound = Gdx.audio.newSound(Gdx.files.internal("data/hit.mp3"));
 	}
 
 	public static void playSound (Sound sound) {

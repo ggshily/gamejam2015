@@ -62,6 +62,7 @@ public class Fort extends DynamicGameObject {
                 bullet.velocity.add(.0f, -3.0f);
                 bullets.add(bullet);
 
+                Assets.playSound(Assets.fireSound);
             }
             else if(type == FORT_TYPE_FRONT)
             {
@@ -77,6 +78,7 @@ public class Fort extends DynamicGameObject {
                 bullet.velocity.add(-1.5f, 1.5f);
                 bullets.add(bullet);
 
+                Assets.playSound(Assets.fireSound);
             }
 
             return bullets;
