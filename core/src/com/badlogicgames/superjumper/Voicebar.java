@@ -18,6 +18,8 @@ public class Voicebar extends DynamicGameObject {
          super.update(deltaTime);
         stateTime += deltaTime;
 
+//        System.out.printf("time %f\n", deltaTime);
+
         return false;
     }
 

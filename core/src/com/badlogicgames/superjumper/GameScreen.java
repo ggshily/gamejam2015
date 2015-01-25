@@ -43,8 +43,8 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 
     final int samples = 8000;
     boolean isMono = true;
-    final short[] data = new short[(int)(samples * 1.8f)];
-    final double[] fftData = new double[(int)(samples * 1.8f)];
+    final short[] data = new short[(int)(samples * 1.6f)];
+    final double[] fftData = new double[(int)(samples * 1.6f)];
     boolean isRecording;
     boolean genFort;
 
@@ -120,6 +120,7 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 	private void updateReady () {
 		if (Gdx.input.justTouched()) {
 			state = GAME_RUNNING;
+            touch.touched = false;
 		}
 	}
 
@@ -218,7 +219,6 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
                             }
                         }
 
-                        isRecording = false;
                         genFort = true;
                     }
                 }).start();
@@ -226,15 +226,19 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 
             if(world.voicebar == null)
             {
+                System.out.println("voice");
                 Vector3 position = new Vector3(touch.touchX, touch.touchY, 0);
                 renderer.cam.unproject(position);
 
                 world.voicebar = new Voicebar(position.x, position.y + 1.0f, 3.6f, 1, 1.8f);
             }
-            else if(world.voicebar.stateTime > world.voicebar.totalTime)
+            else if(world.voicebar.stateTime > world.voicebar.totalTime && genFort)
             {
+                System.out.printf("time %.1f", world.voicebar.stateTime);
                 world.voicebar = null;
                 touch.touched = false;
+                isRecording = false;
+                genFort = false;
                 //gen fort
 
                 Vector3 position = new Vector3(touch.touchX, touch.touchY, 0);
