@@ -37,11 +37,11 @@ public class HelpScreen extends ScreenAdapter {
 	public HelpScreen (SuperJumper game) {
 		this.game = game;
 		guiCam = new OrthographicCamera();
-		guiCam.setToOrtho(false, 320, 480);
-		nextBounds = new Rectangle(320 - 64, 0, 64, 64);
+		guiCam.setToOrtho(false, 800, 1300);
+		nextBounds = new Rectangle(800 - 128, 0, 128, 128);
 		touchPoint = new Vector3();
-		helpImage = Assets.loadTexture("data/help1.png");
-		helpRegion = new TextureRegion(helpImage, 0, 0, 320, 480);
+		helpImage = Assets.loadTexture("data/help.png");
+		helpRegion = new TextureRegion(helpImage, 0, 0, 800, 1300);
 	}
 
 	public void update () {
@@ -50,7 +50,7 @@ public class HelpScreen extends ScreenAdapter {
 
 			if (nextBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
-				game.setScreen(new HelpScreen2(game));
+				game.setScreen(new MainMenuScreen(game));
 			}
 		}
 	}
@@ -69,7 +69,7 @@ public class HelpScreen extends ScreenAdapter {
 
 		game.batcher.enableBlending();
 		game.batcher.begin();
-		game.batcher.draw(Assets.arrow, 320, 0, -64, 64);
+		game.batcher.draw(Assets.arrow, 800, 0, -128, 128);
 		game.batcher.end();
 	}
 
