@@ -22,8 +22,8 @@ public class Bob extends DynamicGameObject {
 	public static final int BOB_STATE_HIT = 2;
 	public static final float BOB_JUMP_VELOCITY = 11;
 	public static final float BOB_MOVE_VELOCITY = 20;
-	public static final float BOB_WIDTH = 0.8f;
-	public static final float BOB_HEIGHT = 0.8f;
+	public static final float BOB_WIDTH = 1.5f;
+	public static final float BOB_HEIGHT = 1.0f;
 
 	int state;
 	float stateTime;
@@ -35,7 +35,8 @@ public class Bob extends DynamicGameObject {
         velocity.add(0, -1.0f);
 	}
 
-	public void update (float deltaTime) {
+	@Override
+    public boolean update (float deltaTime) {
 //		velocity.add(World.gravity.x * deltaTime, World.gravity.y * deltaTime);
 		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
 		bounds.x = position.x - bounds.width / 2;
@@ -59,6 +60,7 @@ public class Bob extends DynamicGameObject {
 //		if (position.x > World.WORLD_WIDTH) position.x = 0;
 
 		stateTime += deltaTime;
+        return false;
 	}
 
 	public void hitSquirrel () {

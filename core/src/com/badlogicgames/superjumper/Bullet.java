@@ -17,18 +17,16 @@ public class Bullet extends DynamicGameObject {
     public Bullet(float x, float y, float width, float height, float lifecycle, float damage, int type) {
         super(x, y, width, height);
 
-        System.out.println("new bullet " + x + " " + y);
+//        System.out.println("new bullet " + x + " " + y);
 
         this.lifecycle = lifecycle;
         this.damage = damage;
         this.type = type;
     }
 
+    @Override
     public boolean update(float deltaTime) {
-
-        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
-        bounds.x = position.x - bounds.width / 2;
-        bounds.y = position.y - bounds.height / 2;
+        super.update(deltaTime);
 
         stateTime += deltaTime;
         if(stateTime >= lifecycle)
@@ -38,8 +36,15 @@ public class Bullet extends DynamicGameObject {
 
     public void draw(SpriteBatch batch) {
 
-        TextureRegion keyFrame = Assets.coinAnim.getKeyFrame(stateTime, Animation.ANIMATION_LOOPING);
-        batch.draw(keyFrame, position.x - 0.5f, position.y - 0.5f, 1, 1);
+        if(this.type == 1) {
+            TextureRegion keyFrame = Assets.bullet1.getKeyFrame(stateTime, Animation.ANIMATION_LOOPING);
+            batch.draw(keyFrame, position.x - 0.5f, position.y - 0.5f, 1, 2);
+        }
+        else
+        {
+            TextureRegion keyFrame = Assets.bullet2.getKeyFrame(stateTime, Animation.ANIMATION_LOOPING);
+            batch.draw(keyFrame, position.x - 0.5f, position.y - 0.5f, 1, 1);
+        }
     }
 
 }

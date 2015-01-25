@@ -37,10 +37,14 @@ public class World {
 	public final List<Coin> coins;
     public final List<Bullet> bullets;
     public final List<Bob> bobs;
+    public final List<Fort> forts;
 	public Castle castle;
 	public final Random rand;
 
-	public float heightSoFar;
+    Voicebar voicebar;
+
+
+    public float heightSoFar;
 	public int score;
 	public int state;
 
@@ -57,6 +61,7 @@ public class World {
 		this.coins = new ArrayList<Coin>();
         this.bullets = new ArrayList<Bullet>();
         this.bobs = new ArrayList<Bob>();
+        this.forts = new ArrayList<Fort>();
         bobs.add(bob);
 
 		rand = new Random();
@@ -118,9 +123,34 @@ public class World {
 		updateCoins(deltaTime);
         updateBobs(deltaTime);
         updateBullets(deltaTime);
+        updateFort(deltaTime);
+
+        if(voicebar != null)
+        {
+            voicebar.update(deltaTime);
+        }
+
 		if (bob.state != Bob.BOB_STATE_HIT) checkCollisions();
 		checkGameOver();
 	}
+
+    private void updateFort(float deltaTime) {
+        for(int i = forts.size() - 1; i >= 0; i--)
+        {
+            if(forts.get(i).update(deltaTime))
+            {
+                forts.remove(i);
+            }
+            else
+            {
+                ArrayList<Bullet> bullets = forts.get(i).getBullets();
+                if(bullets != null)
+                {
+                    this.bullets.addAll(bullets);
+                }
+            }
+        }
+    }
 
     private void updateBobs(float deltaTime) {
         for(int i = bobs.size() - 1; i >= 0; i--)

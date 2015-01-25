@@ -23,6 +23,8 @@ import com.badlogic.gdx.graphics.Texture;
 import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 
+import java.util.ArrayList;
+
 public class Assets {
 	public static Texture background;
 	public static TextureRegion backgroundRegion;
@@ -48,6 +50,16 @@ public class Assets {
 	public static TextureRegion platform;
 	public static Animation brakingPlatform;
 	public static BitmapFont font;
+    public static TextureRegion base;
+
+    public static ArrayList<Texture> textures = new ArrayList<Texture>();
+    public static Animation enemyWalk;
+    public static Animation bullet1;
+    public static Animation bullet2;
+    public static Animation cowboy;
+    public static TextureRegion voicebarFrame;
+    public static TextureRegion voicebarInside;
+    public static TextureRegion title;
 
 	public static Music music;
 	public static Sound jumpSound;
@@ -61,8 +73,34 @@ public class Assets {
 	}
 
 	public static void load () {
-		background = loadTexture("data/background.png");
-		backgroundRegion = new TextureRegion(background, 0, 0, 320, 480);
+		background = loadTexture("data/Background.png");
+		backgroundRegion = new TextureRegion(background, 0, 0, 800, 1300);
+
+        Texture enemyL = loadTexture("data/Enemy_L.png");
+        textures.add(enemyL);
+        Texture enemyR = loadTexture("data/Enemy_R.png");
+        textures.add(enemyR);
+        enemyWalk = new Animation(0.2f, new TextureRegion(enemyL, 0, 0, 483, 320), new TextureRegion(enemyR, 0, 0, 483, 320));
+
+        Texture bullet1 = loadTexture("data/bullet_01.png");
+        textures.add(bullet1);
+        Texture bullet2 = loadTexture("data/bullet_02.png");
+        textures.add(bullet2);
+
+        Assets.bullet1 = new Animation(0.2f, new TextureRegion(bullet1, 0, 0, 100, 200));
+        Assets.bullet2 = new Animation(0.2f, new TextureRegion(bullet2, 0, 0, 100, 200));
+
+        Texture cowboy = loadTexture("data/cowboy.png");
+        textures.add(cowboy);
+
+        Assets.cowboy = new Animation(0.2f, new TextureRegion(cowboy, 0, 0, 200, 170));
+
+        base = new TextureRegion(loadTexture("data/Base.png"), 0, 0, 800, 68);
+
+        voicebarFrame = new TextureRegion(loadTexture("data/voicebar_frame.png"), 0, 0, 540, 150);
+        voicebarInside = new TextureRegion(loadTexture("data/voicebar_inside.png"), 0, 0, 457, 116);
+
+        title = new TextureRegion(loadTexture("data/titlescreen.png"), 0, 0, 592, 561);
 
 		items = loadTexture("data/items.png");
 		mainMenu = new TextureRegion(items, 0, 224, 300, 110);

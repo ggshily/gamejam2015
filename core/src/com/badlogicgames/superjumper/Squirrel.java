@@ -28,7 +28,7 @@ public class Squirrel extends DynamicGameObject {
 		velocity.set(SQUIRREL_VELOCITY, 0);
 	}
 
-	public void update (float deltaTime) {
+	public boolean update (float deltaTime) {
 		position.add(velocity.x * deltaTime, velocity.y * deltaTime);
 		bounds.x = position.x - SQUIRREL_WIDTH / 2;
 		bounds.y = position.y - SQUIRREL_HEIGHT / 2;
@@ -42,5 +42,7 @@ public class Squirrel extends DynamicGameObject {
 			velocity.x = -SQUIRREL_VELOCITY;
 		}
 		stateTime += deltaTime;
+
+        return false;
 	}
 }

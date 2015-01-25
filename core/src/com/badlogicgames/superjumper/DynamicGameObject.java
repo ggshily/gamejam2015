@@ -29,4 +29,13 @@ public class DynamicGameObject extends GameObject {
 		velocity = new Vector2();
 		accel = new Vector2();
 	}
+
+    public boolean update(float deltaTime) {
+
+        position.add(velocity.x * deltaTime, velocity.y * deltaTime);
+        bounds.x = position.x - bounds.width / 2;
+        bounds.y = position.y - bounds.height / 2;
+
+        return false;
+    }
 }

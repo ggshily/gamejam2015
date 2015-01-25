@@ -35,7 +35,7 @@ public class MainMenuScreen extends ScreenAdapter {
 	public MainMenuScreen (SuperJumper game) {
 		this.game = game;
 
-		guiCam = new OrthographicCamera(1280, 720);
+		guiCam = new OrthographicCamera(320, 480);
 		guiCam.position.set(320 / 2, 480 / 2, 0);
 		soundBounds = new Rectangle(0, 0, 64, 64);
 		playBounds = new Rectangle(160 - 150, 200 + 18, 300, 36);
@@ -50,7 +50,9 @@ public class MainMenuScreen extends ScreenAdapter {
 
 			if (playBounds.contains(touchPoint.x, touchPoint.y)) {
 				Assets.playSound(Assets.clickSound);
-				game.setScreen(new GameScreen(game));
+                GameScreen screen = new GameScreen(game);
+                Gdx.input.setInputProcessor(screen);
+				game.setScreen(screen);
 				return;
 			}
 			if (highscoresBounds.contains(touchPoint.x, touchPoint.y)) {
@@ -88,7 +90,7 @@ public class MainMenuScreen extends ScreenAdapter {
 
 		game.batcher.enableBlending();
 		game.batcher.begin();
-		game.batcher.draw(Assets.logo, 160 - 274 / 2, 480 - 10 - 142, 274, 142);
+		game.batcher.draw(Assets.title, 160 - 274 / 2, 480 - 10 - 200, 274, 200);
 		game.batcher.draw(Assets.mainMenu, 10, 200 - 110 / 2, 300, 110);
 		game.batcher.draw(Settings.soundEnabled ? Assets.soundOn : Assets.soundOff, 0, 0, 64, 64);
 		game.batcher.end();	

@@ -42,7 +42,15 @@ public class WorldRenderer {
 		renderObjects();
 	}
 
-	public void renderBackground () {
+    private void renderBase() {
+        batch.disableBlending();
+        batch.begin();
+        batch.draw(Assets.base, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH,
+                0.2f);
+        batch.end();
+    }
+
+    public void renderBackground () {
 		batch.disableBlending();
 		batch.begin();
 		batch.draw(Assets.backgroundRegion, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH,
@@ -60,14 +68,32 @@ public class WorldRenderer {
 		renderSquirrels();
 //		renderCastle();
         renderBullets();
+        renderForts();
+        renderVoicebar();
+        batch.draw(Assets.base, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH,
+                0.2f);
 		batch.end();
 	}
+
+    private void renderVoicebar() {
+        if(world.voicebar != null)
+        {
+            world.voicebar.draw(batch);
+        }
+    }
+
+    private void renderForts() {
+        for(Fort fort : world.forts)
+        {
+            fort.draw(batch);
+        }
+    }
 
     private void renderBobs() {
         for(Bob bob : world.bobs)
         {
-            TextureRegion keyFrame = Assets.bobFall.getKeyFrame(bob.stateTime, Animation.ANIMATION_LOOPING);
-            batch.draw(keyFrame, bob.position.x + 0.5f, bob.position.y - 0.5f, 1, 1);
+            TextureRegion keyFrame = Assets.enemyWalk.getKeyFrame(bob.stateTime, Animation.ANIMATION_LOOPING);
+            batch.draw(keyFrame, bob.position.x - 0.75f, bob.position.y - 0.5f, 1.5f, 1);
 
         }
     }

@@ -40,7 +40,8 @@ public class Platform extends DynamicGameObject {
 		}
 	}
 
-	public void update (float deltaTime) {
+	@Override
+    public boolean update (float deltaTime) {
 		if (type == PLATFORM_TYPE_MOVING) {
 			position.add(velocity.x * deltaTime, 0);
 			bounds.x = position.x - PLATFORM_WIDTH / 2;
@@ -57,6 +58,7 @@ public class Platform extends DynamicGameObject {
 		}
 
 		stateTime += deltaTime;
+        return false;
 	}
 
 	public void pulverize () {
