@@ -46,7 +46,7 @@ public class WorldRenderer {
         batch.disableBlending();
         batch.begin();
         batch.draw(Assets.base, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH,
-                0.4f);
+                0.8f);
         batch.end();
     }
 
@@ -72,7 +72,7 @@ public class WorldRenderer {
         renderForts();
         renderVoicebar();
         batch.draw(Assets.base, cam.position.x - FRUSTUM_WIDTH / 2, cam.position.y - FRUSTUM_HEIGHT / 2, FRUSTUM_WIDTH,
-                0.2f);
+                0.6f);
 		batch.end();
 	}
 

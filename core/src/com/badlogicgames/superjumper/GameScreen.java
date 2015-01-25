@@ -61,6 +61,9 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 	int lastScore;
 	String scoreString;
 
+    int lastHp;
+    String hpString;
+
     class TouchInfo {
         public float touchX = 0;
         public float touchY = 0;
@@ -85,6 +88,7 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 		quitBounds = new Rectangle(160 - 96, 240 - 36, 192, 36);
 		lastScore = 0;
 		scoreString = "SCORE: 0";
+        hpString = "HP: 20";
 	}
 
 	public void update (float deltaTime) {
@@ -237,6 +241,11 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 			lastScore = world.score;
 			scoreString = "SCORE: " + lastScore;
 		}
+        if(world.hp != lastHp)
+        {
+            lastHp = world.hp;
+            hpString = "HP: " + lastHp;
+        }
 		if (world.state == World.WORLD_STATE_NEXT_LEVEL) {
 			game.setScreen(new WinScreen(game));
 		}
@@ -351,11 +360,13 @@ public class GameScreen extends ScreenAdapter implements  InputProcessor {
 	private void presentRunning () {
 		game.batcher.draw(Assets.pause, 320 - 64, 480 - 64, 64, 64);
 		Assets.font.draw(game.batcher, scoreString, 16, 480 - 20);
+        Assets.font.draw(game.batcher, hpString, 16, 480 - 40);
 	}
 
 	private void presentPaused () {
 		game.batcher.draw(Assets.pauseMenu, 160 - 192 / 2, 240 - 96 / 2, 192, 96);
 		Assets.font.draw(game.batcher, scoreString, 16, 480 - 20);
+        Assets.font.draw(game.batcher, hpString, 16, 480 - 40);
 	}
 
 	private void presentLevelEnd () {

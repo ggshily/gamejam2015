@@ -113,8 +113,8 @@ public class World {
 	public void update (float deltaTime, float accelX) {
         if((genBobTime -= deltaTime) <= 0)
         {
-            genBobTime = 2;
-            float x = rand.nextFloat() * 5;
+            genBobTime = 2 + rand.nextFloat();
+            float x = rand.nextFloat() * 8 + 1;
             Bob bob = new Bob(x, 15);
             bobs.add(bob);
         }
@@ -171,7 +171,7 @@ public class World {
         for(int i = bobs.size() - 1; i >= 0; i--)
         {
             bobs.get(i).update(deltaTime);
-            if(heightSoFar - 7.5f > bobs.get(i).position.y)
+            if(heightSoFar  > bobs.get(i).position.y)
             {
                 bobs.remove(i);
                 hp--;
@@ -197,6 +197,8 @@ public class World {
 
                 bobs.remove(bob);
                 bullets.remove(i);
+
+                score += 10;
 
                 Assets.playSound(Assets.hitEnemySound);
             }
